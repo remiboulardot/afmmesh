@@ -2,7 +2,7 @@ from scipy import misc
 import cv2
 import numpy as np
 import matplotlib.tri as tri
-import visvis as vv
+#import visvis as vv
 import vtk
 from vtk.util import numpy_support
 
@@ -173,11 +173,11 @@ def writeobj(vertices,triangles,filename):
         f.write('f {0} {1} {2}\n'.format(triangle[0]+1,triangle[1]+1,triangle[2]+1))
 
 if __name__ == "__main__":
-    points, triangles = loadafmasmesh("BasicImageEnhancementAndAnalysisTechniquesExample_01.tif")
+    points, triangles = loadafmasmesh("imagepic.png")
 
-    plot3D(points, triangles)
+    #plot3D(points, triangles)
     # Run main loop
-    app = vv.use()
-    app.Run()
+    #app = vv.use()
+    #app.Run()
     writeobj(points,triangles,'test.obj')
 

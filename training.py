@@ -1,9 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from PIL import Image
 
 
 
-H=50
+H=150
 W=60
 x=200
 y=30
@@ -52,8 +53,11 @@ for i in range (x,x+W-1):
 
 print(tri)
 
-image = plt.imshow(tri)
-plt.show(image)
+#image = plt.imshow(tri)
+#plt.show(image)
 
 image2 = plt.imshow(im)
 plt.show(image2)
+
+image3=Image.fromarray(im.astype(np.uint8),'L')
+image3.save('imagepic.png')

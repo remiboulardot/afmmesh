@@ -2,7 +2,7 @@ from scipy import misc
 import cv2
 import numpy as np
 import matplotlib.tri as tri
-#import visvis as vv
+import visvis as vv
 import vtk
 from vtk.util import numpy_support
 
@@ -41,11 +41,13 @@ def loadafmasmesh(path, flatten=True, gaussianblursize=5):
         #Remove background artifact
         img = img - np.minimum(img, cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel))
         #Add optional gaussian blur to denoise
-        img = cv2.GaussianBlur(img, (0, 0), gaussianblursize)
+        if gaussianblursize>0:
+            img = cv2.GaussianBlur(img, (0, 0), gaussianblursize)
         #img = cv2.bilateralFilter(img,9,80,80)
 
-        if img.shape[2] == 3:  #if the image is a 3 channel rgb average the channels
-            img = np.sum(img, axis=2) / 3.0
+        if img.shape.__len__()>2:
+            if img.shape[2] == 3:  #if the image is a 3 channel rgb average the channels
+                img = np.sum(img, axis=2) / 3.0
 
     #make a grid array for x and y
     xx, yy = np.mgrid[0:img.shape[0], 0:img.shape[1]]
@@ -75,7 +77,7 @@ def loadafmasmesh(path, flatten=True, gaussianblursize=5):
 
     decimator = vtk.vtkDecimatePro()
     decimator.SetInputConnection(delaunay.GetOutputPort())
-    decimator.SetTargetReduction(0.99)
+    decimator.SetTargetReduction(0.999)
     decimator.PreserveTopologyOn()
     #decimator.BoundaryVertexDeletionOff()
 
@@ -173,11 +175,11 @@ def writeobj(vertices,triangles,filename):
         f.write('f {0} {1} {2}\n'.format(triangle[0]+1,triangle[1]+1,triangle[2]+1))
 
 if __name__ == "__main__":
-    points, triangles = loadafmasmesh("imagepic.png")
+    points, triangles = loadafmasmesh("imagepic.png",gaussianblursize=0,flatten=False)
 
-    #plot3D(points, triangles)
+    plot3D(points, triangles)
     # Run main loop
-    #app = vv.use()
-    #app.Run()
+    app = vv.use()
+    app.Run()
     writeobj(points,triangles,'test.obj')
 
